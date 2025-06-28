@@ -1,3 +1,26 @@
+// Traitement pour la galerie
+document.getElementById("photoGalerie").addEventListener("change", function () {
+  traiterImage(this.files[0]);
+});
+
+// Traitement pour la caméra
+document.getElementById("photoCamera").addEventListener("change", function () {
+  traiterImage(this.files[0]);
+});
+
+// Fonction commune
+async function traiterImage(file) {
+  if (!file) return;
+
+  document.getElementById("resultat").innerHTML = "⏳ Traitement de l'image...";
+
+  const { data: { text } } = await Tesseract.recognize(file, 'fra', {
+    logger: m => console.log(m)
+  });
+
+  document.getElementById("texte").value = text;
+  calculerPrix();
+}
 
 function calculerPrix() {
   const texte = document.getElementById("texte").value;
@@ -13,19 +36,13 @@ function calculerPrix() {
       let unité = match[2].toLowerCase();
       let valeur = parseFloat(nombre);
 
-      if (unité === 'k') {
-        total += valeur * 1000;
-      } else if (['f', 'fr'].includes(unité)) {
-        total += valeur;
-      } else if (unité === '€') {
-        total += valeur * 655;
-      } else if (unité === '$') {
-        total += valeur * 600;
-      }
+      if (unité === 'k') total += valeur * 1000;
+      else if (['f', 'fr'].includes(unité)) total += valeur;
+      else if (unité === '€') total += valeur * 655;
+      else if (unité === '$') total += valeur * 600;
     });
   }
 
-  // Conversions
   const totalFr = Math.round(total);
   const totalEuro = total / 655;
   const totalDollar = total / 600;
@@ -33,15 +50,14 @@ function calculerPrix() {
   const totalEuroStr = totalEuro.toFixed(5);
   const totalDollarStr = totalDollar.toFixed(5);
 
-  // Affichage structuré
   document.getElementById("resultat").innerHTML = `
     <h5 class="text-primary">Résultat en chiffres :</h5>
     <span style="color: green;">En franc : ${totalFr.toLocaleString('fr-FR')} Fr</span><br>
     <span style="color: blue;">En euro : ${totalEuroStr} €</span><br>
     <span style="color: red;">En dollar : ${totalDollarStr} $</span><br><br>
 
- <hr style="border: 1px solid black; margin: 15px 0;">  <!-- Ligne noire -->
- 
+    <hr style="border: 1px solid black; margin: 15px 0;">
+
     <h5 class="text-secondary">Résultats en lettres :</h5>
     <span style="color: green;">En franc : ${enLettres(totalFr)} francs</span><br>
     <span style="color: blue;">En euro : ${enLettres(totalEuro)} euros</span><br>
@@ -49,7 +65,7 @@ function calculerPrix() {
   `;
 }
 
-// Convertit les nombres en lettres (simplifié pour les besoins ici)
+// Conversion en lettres
 function enLettres(nombre) {
   const parties = nombre.toFixed(5).split(".");
   const entier = parseInt(parties[0]);
@@ -72,7 +88,6 @@ function getUnitéCentime(decimal) {
   return "centimes";
 }
 
-
 function convertirEnLettres(n) {
   const unite = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"];
   const dizaine = ["", "dix", "vingt", "trente", "quarante", "cinquante", "soixante"];
@@ -91,5 +106,5 @@ function convertirEnLettres(n) {
     return (n >= 2000 ? `${convertirEnLettres(Math.floor(n / 1000))} mille` : "mille") +
       (n % 1000 ? ` ${convertirEnLettres(n % 1000)}` : "");
   }
-  return n.toString(); // fallback si trop grand
+  return n.toString();
 }
