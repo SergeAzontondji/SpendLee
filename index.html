@@ -3,42 +3,201 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smartcalc</title>
+  <title>Spendlee</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="icon" type="image/x-icon" href="image/favicon.ico">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+      .navbar-transparent {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+        /* Thème sombre appliqué via une classe */
+      .dark-mode {
+        background-color: #121212 !important;
+        color: #f1f1f1 !important;
+      }
+
+      .dark-mode .navbar {
+        background-color: #1f1f1f !important;
+      }
+
+      .dark-mode .nav-link {
+        color: #f1f1f1 !important;
+      }
+
+      .dark-mode .btn {
+        border-color: #888;
+        color: #f1f1f1;
+      }
+
+
+/* Mode sombre pour la zone de texte */
+.dark-mode textarea,
+.dark-mode select {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #444;
+}
+
+/* Placeholder en mode sombre */
+.dark-mode textarea::placeholder {
+  color: #bbb;
+}
+
+.dark-mode #operationSelectionnee {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border-color: #444 !important;
+}
+
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border-color: #666 !important;
+  box-shadow: none !important;
+}
+
+#texte, #operationSelectionnee {
+  transition: background-color 0,5s, color 0,5s, border-color 0,5s;
+}
+
+#operation {
+  transition: background-color 0,5s, color 0,5s, border-color 0,5s;
+}
+
+.dark-mode #resultat {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border-color: #444 !important;
+}
+
+#resultat {
+  transition: background-color 0,5s, color 0,5s, border-color 0,5s;
+}
+
+.dark-mode #lee {
+  color: #ffffff !important;
+  transition: background-color 0,5s, color 0,5s, border-color 0,5s;
+}
+.dark-mode #entrezvos {
+  color: #ffffff !important;
+}
+
+</style>
+
+
+
 </head>
-<body class="bg-light py-5">
+<body class="bg-light py-5 pt-5">
+
+
+
+  <!-- Menu navbar -->
+<nav id="navbar" class="navbar navbar-expand-lg bg-white shadow-sm rounded-pill py-3 px-4 mt-3 mx-auto fixed-top navbar-transparent" style="max-width: 95%;">
+
+  <div class="container-fluid">
+    
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
+      <img src="image/favicon.ico" alt="Logo" width="30" height="30" class="me-2">
+      <span style="color: #ff0000;">Spend</span><span id="lee" style="color: #333;">Lee</span>
+    </a>
+
+    <!-- Toggler mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Liens -->
+    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+      <ul class="navbar-nav gap-3">
+        <li class="nav-item"><a class="nav-link text-dark fw-medium" href="#">Addition</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-medium" href="#">Soustraction</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-medium" href="#">Multiplication</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-medium" href="#">Division</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-medium" href="#">Multi-opérateur</a></li>
+      </ul>
+    </div>
+
+    <!-- Bouton thème visible partout -->
+    <div>
+      <button id="modeToggle" class="btn btn-light shadow-sm rounded-circle" title="Mode sombre">
+        🌙
+      </button>
+    </div>
+
+  </div>
+</nav>
+
   <div class="container">
-    <h2 class="mb-4 text-center">💰 Smartcalc - Calculateur de Sommes Automatique</h2>
+<br>
+
+    <div class="text-center my-5">
+  <h1 class="fw-bold display-3" ><span style="color: #ff0000;">Spend</span><span id="lee" style="color: #333;">Lee</span> </h1>
+
+      <p class="text-muted mt-2" id="entrezvos">
+        Entrez vos dépenses ou copiez du texte avec des prix, puis laissez SpendLee les extraire, les additionner et vous simplifier la vie.
+      </p>
+</div>
+
+    <div id="operationSelectionnee" class="alert alert-info fw-bold d-none text-center"></div>
+
+
+     <!-- Choisir l'opérateur -->
+    <div class="mb-3">
+      <label for="operation" class="form-label">Choisir l'opération à appliquer entre les montants :</label>
+        <select id="operation" class="form-select">
+          <option value="addition" selected>Addition (+)</option>
+          <option value="soustraction">Soustraction (-)</option>
+          <option value="multiplication">Multiplication (×)</option>
+          <option value="division">Division (÷)</option>
+          <option value="multi-opérateur">Multi-opérateur (+-x÷)</option>
+         </select>
+    </div>
+
 
     <!-- Champ texte -->
     <div class="mb-3">
-      <label for="texte" class="form-label">Entrez votre texte contenant des prix :</label>
-      <textarea id="texte" class="form-control" rows="6" placeholder="Exemple : Robe 2k, Chaussure 3000 F..."></textarea>
-    </div>
+      <label for="texte" class="form-label">Entrez votre texte contenant des prix ou </label>
+      
+       <!-- Un seul bouton pour prendre ou choisir une photo -->
+      <label for="photoUnique" class="form-label mb-4">Prendre une photo :</label>
+      <input type="file" accept="image/*" capture="environment" id="photoUnique" class="form-control visually-hidden">
+      <button onclick="document.getElementById('photoUnique').click()" class="btn btn-secondary">
+        📸 Prendre ou choisir une photo
+      </button>
 
-    <!-- Choisir depuis la galerie -->
-    <div class="mb-3">
-      <label for="photoGalerie" class="form-label">Choisir une photo existante :</label>
-      <input type="file" accept="image/*" id="photoGalerie" class="form-control">
-    </div>
-
-    <!-- Prendre avec la caméra -->
-    <div class="mb-3">
-      <label for="photoCamera" class="form-label">Prendre une photo avec la caméra :</label>
-      <input type="file" accept="image/*" capture="environment" id="photoCamera" class="form-control">
+      <textarea id="texte" class="form-control" rows="5" placeholder="Exemple : Robe 2k, Chaussure 3000 F..."></textarea>
+      
     </div>
 
     <!-- Bouton calcul -->
     <div class="d-grid">
-      <button onclick="calculerPrix()" class="btn btn-primary">Calculer la Somme Totale</button>
+      <button onclick="calculerPrix()" class="btn btn-primary" style="background-color: #ff0000;">Calculer</button>
     </div>
 
     <!-- Résultat -->
     <div class="mt-4">
       <h5>Résultat :</h5>
-      <div id="resultat" class="alert alert-info fw-bold">0 Fr</div>
+            <div id="resultat" class="alert alert-info fw-bold">0 Fr</div>
     </div>
+
+    
+    <div class="d-flex justify-content-center gap-2 mt-3">
+      <button class="btn btn-outline-primary" onclick="copierResultat()">Copier</button>
+      <button class="btn btn-outline-secondary" onclick="exporterPDF()">Exporter en PDF</button>
+      <button class="btn btn-outline-dark" onclick="exporterTXT()">Exporter en .txt</button>
+    </div>
+
+
+    
   </div>
 
   <!-- OCR -->
@@ -46,5 +205,8 @@
 
   <!-- Script principal -->
   <script src="script.js"></script>
+  
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
