@@ -110,9 +110,9 @@
     </a>
 
     <!-- Toggler mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+    <button style="border-color: #ffffff;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+      <span style="color: #ffffff;" class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Liens -->
@@ -128,7 +128,7 @@
 
     <!-- Bouton thème visible partout -->
     <div>
-      <button id="modeToggle" class="btn btn-light shadow-sm rounded-circle" title="Mode sombre">
+      <button id="modeToggle" class="btn  shadow-sm rounded-circle" title="Changer mode">
         🌙
       </button>
     </div>
@@ -170,10 +170,15 @@
        <!-- Un seul bouton pour prendre ou choisir une photo -->
       <label for="photoUnique" class="form-label mb-4">Prendre une photo :</label>
       <input type="file" accept="image/*" capture="environment" id="photoUnique" class="form-control visually-hidden">
-      <button onclick="document.getElementById('photoUnique').click()" class="btn btn-secondary">
+      <button onclick="document.getElementById('photoUnique').click()" class="btn btn-secondary mb-4">
         📸 Prendre ou choisir une photo
       </button>
 
+      <div class="mb-3">
+      <label for="photoGalerie" class="form-label">Choisir une photo existante :</label>
+      <input type="file" accept="image/*" id="photoGalerie" class="form-control">
+    </div>
+    
       <textarea id="texte" class="form-control" rows="5" placeholder="Exemple : Robe 2k, Chaussure 3000 F..."></textarea>
       
     </div>
