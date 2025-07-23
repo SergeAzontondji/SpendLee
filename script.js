@@ -1,8 +1,21 @@
 
 
+document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    if (navbarCollapse.classList.contains('show')) {
+      const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: true });
+      bsCollapse.hide();
+    }
+  });
+});
 
 // Traitement unique pour galerie ou caméra
 document.getElementById("photoUnique").addEventListener("change", function () {
+  traiterImage(this.files[0]);
+});
+
+document.getElementById("photoGalerie").addEventListener("change", function () {
   traiterImage(this.files[0]);
 });
 
@@ -13,13 +26,24 @@ async function traiterImage(file) {
 
   document.getElementById("resultat").innerHTML = "⏳ Traitement de l'image...";
 
-  const { data: { text } } = await Tesseract.recognize(file, 'fra', {
-    logger: m => console.log(m)
-  });
+  try {
+    const { data: { text } } = await Tesseract.recognize(file, 'fra', {
+      logger: m => console.log(m)
+    });
 
-  document.getElementById("texte").value = text;
-  calculerPrix();
+    document.getElementById("texte").value = text;
+    calculerPrix();
+  } catch (error) {
+    console.error("Erreur OCR :", error);
+    document.getElementById("resultat").innerHTML = "❌ Une erreur est survenue lors du traitement OCR.";
+  }
 }
+
+
+const formatFranc = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF', maximumFractionDigits: 0 });
+const formatEuro = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 5 });
+const formatDollar = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 5 });
+
 
 function calculerPrix() {
 
@@ -46,7 +70,7 @@ function calculerPrix() {
     brut = brut.replace(',', '.');
 
     let valeur = parseFloat(brut);
-    let unite = match[2].toLowerCase();
+    let unite = match[2].toLowerCase().replace(/[^a-z]/g, '');
 
     if (unite === 'k') valeur *= 1000;
     else if (['f', 'fr', 'fcfa'].includes(unite)) valeur *= 1;
@@ -86,15 +110,15 @@ function calculerPrix() {
   const totalEuro = total / 655;
   const totalDollar = total / 600;
 
-  const totalEuroStr = totalEuro.toFixed(5);
-  const totalDollarStr = totalDollar.toFixed(5);
+  
 
   document.getElementById("resultat").innerHTML = `
    
     <h5 class="text-primary">Résultat en chiffres :</h5>
-    <span style="color: green;">En franc :<strong> ${total.toLocaleString('fr-FR')} Fr</strong></span><br>
-    <span style="color: blue;">En euro :<strong> ${totalEuroStr} €</strong></span><br>
-    <span style="color: red;">En dollar :<strong> ${totalDollarStr} $</strong></span><br>
+    <span style="color: green;">En franc :<strong> ${formatFranc.format(total)}</strong></span><br>
+    <span style="color: blue;">En euro :<strong> ${formatEuro.format(totalEuro)}</strong></span><br>
+    <span style="color: red;">En dollar :<strong> ${formatDollar.format(totalDollar)}</strong></span><br>
+
 
     <hr style="border: 1px solid black; margin: 15px 0;">
 
@@ -104,6 +128,12 @@ function calculerPrix() {
     <span style="color: red;">En dollar :<strong> ${enLettres(totalDollar)} dollars</strong></span>
   `;
 }
+
+function estExpressionValide(expr) {
+  const regex = /^[\d+\-*/().\s]+$/;
+  return regex.test(expr);
+}
+
 
 function calculerExpressionArithmetique(texte) {
   const montantRegex = /(\d{1,3}(?:[\s.,]?\d{3})*(?:[.,]\d+)?)(?:\s*)(k|f|fr|fcfa|€|\$)/gi;
@@ -119,7 +149,7 @@ function calculerExpressionArithmetique(texte) {
     brut = brut.replace(',', '.');
 
     let valeur = parseFloat(brut);
-    unite = unite.toLowerCase();
+    unite = unite.toLowerCase().replace(/[^a-z]/g, '');
 
     if (unite === 'k') valeur *= 1000;
     else if (['f', 'fr', 'fcfa'].includes(unite)) valeur *= 1;
@@ -132,19 +162,24 @@ function calculerExpressionArithmetique(texte) {
   // Remplacer × et ÷ par * et /
   expression = expression.replace(/×/g, '*').replace(/÷/g, '/');
 
+  if (!estExpressionValide(expression)) {
+  document.getElementById("resultat").innerHTML = "Erreur : expression invalide ou non sécurisée.";
+  return;
+}
+
   try {
     const total = eval(expression);
     const totalEuro = total / 655;
     const totalDollar = total / 600;
 
-    const totalEuroStr = totalEuro.toFixed(5);
-    const totalDollarStr = totalDollar.toFixed(5);
+    
 
     document.getElementById("resultat").innerHTML = `
       <h5 class="text-primary">Résultat en chiffres :</h5>
-      <span style="color: green;">En franc : ${total.toLocaleString('fr-FR')} Fr</span><br>
-      <span style="color: blue;">En euro : ${totalEuroStr} €</span><br>
-      <span style="color: red;">En dollar : ${totalDollarStr} $</span><br><br>
+      <span style="color: green;">En franc :<strong> ${formatFranc.format(total)}</strong></span><br>
+      <span style="color: blue;">En euro :<strong> ${formatEuro.format(totalEuro)}</strong></span><br>
+      <span style="color: red;">En dollar :<strong> ${formatDollar.format(totalDollar)}</strong></span><br>
+
 
       <hr style="border: 1px solid black; margin: 15px 0;">
 
@@ -308,35 +343,33 @@ window.addEventListener("scroll", function () {
 
 
 //Pour le Mode Sombre et Clair
-  document.getElementById("modeToggle").addEventListener("click", function () {
-  document.body.classList.toggle("dark-mode");
-
-  // Changer l'icône en fonction du thème
-  this.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
-});
-
-
-// Sauvegarder l'état
-const theme = document.body.classList.contains("dark-mode") ? "dark" : "light";
-localStorage.setItem("theme", theme);
-
-// Vérifie s'il y a un thème enregistré
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark-mode");
+ function appliquerTheme(theme) {
+  const corps = document.body;
+  const bouton = document.getElementById("modeToggle");
+  if (theme === "dark") {
+    corps.classList.add("dark-mode");
+    if (bouton) bouton.textContent = "☀️";
+  } else {
+    corps.classList.remove("dark-mode");
+    if (bouton) bouton.textContent = "🌙";
+  }
+  localStorage.setItem("theme", theme);
 }
 
-// Bascule le mode sombre
-document.querySelector('#toggleDarkMode').addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  
-  // Sauvegarde dans localStorage
-  const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-  localStorage.setItem('theme', theme);
+function basculerTheme() {
+  const themeActuel = document.body.classList.contains("dark-mode") ? "dark" : "light";
+  const nouveauTheme = themeActuel === "dark" ? "light" : "dark";
+  appliquerTheme(nouveauTheme);
+}
+
+// Ajouter un seul écouteur pour le dark mode
+document.querySelectorAll("#modeToggle, #toggleDarkMode").forEach(btn => {
+  btn.addEventListener("click", basculerTheme);
 });
 
 // Appliquer le thème sauvegardé au chargement
-window.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark-mode');
-  }
+window.addEventListener("DOMContentLoaded", () => {
+  const themeSauvegarde = localStorage.getItem("theme") || "light";
+  appliquerTheme(themeSauvegarde);
 });
+
