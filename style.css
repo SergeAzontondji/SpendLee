@@ -93,6 +93,111 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
+.bg-primary {
+  background-color: #ff0055 !important;
+}
+
+.rounded {
+  border-radius: 2rem !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.number-circle {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  background-color: #ff0055;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 0 auto 1rem;
+}
+
+
+
+.circle-highlight {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+
+.circle-highlight::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 450%;
+  height: 450%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: url('/image/cercle.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.circle-highlight:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.card-feature-custom1 {
+transition: background-color 0.3s ease, color 0.3s ease;
+border-top-left-radius: 5rem; 
+border-top-right-radius: 2rem; 
+border-bottom-left-radius: 2rem; 
+border-bottom-right-radius: 2rem; 
+}
+.card-feature-custom3 {
+transition: background-color 0.3s ease, color 0.3s ease;
+border-top-left-radius: 2em; 
+border-top-right-radius: 5rem; 
+border-bottom-left-radius: 2rem; 
+border-bottom-right-radius: 2rem; 
+}
+.card-feature-custom4 {
+transition: background-color 0.3s ease, color 0.3s ease;
+border-top-left-radius: 2rem; 
+border-top-right-radius: 2rem; 
+border-bottom-left-radius: 5rem; 
+border-bottom-right-radius: 2rem; 
+}
+.card-feature-custom6 {
+transition: background-color 0.3s ease, color 0.3s ease;
+border-top-left-radius: 2rem; 
+border-top-right-radius: 2rem; 
+border-bottom-left-radius: 2rem; 
+border-bottom-right-radius: 5rem; 
+}
+
+.card-feature {
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card-feature:hover {
+  background-color: #ff0055 !important;
+  color: white !important;
+
+  .number-circle {
+  background-color: #ffffff !important;
+  color: #ff0055 !important;
+}
+}
+
+.dark-mode .card-feature {
+  background-color: #1e1e1e !important;
+}
+.dark-mode .card-feature:hover {
+  background-color: #ff0055 !important;
+}
+
 footer {
   position: fixed;
   bottom: 0;
