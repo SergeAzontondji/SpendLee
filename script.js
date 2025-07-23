@@ -309,10 +309,10 @@ async function exporterPDF() {
 
   const franc = document.querySelector("#resultat").innerText;
 
-  doc.text("Résultats Smartcalc", 10, 10);
+  doc.text("Résultats SpendLee", 10, 10);
   doc.text(franc, 10, 20);
 
-  doc.save("resultats_smartcalc.pdf");
+  doc.save("resultats_SpendLee.pdf");
 }
 
 function copierResultat() {
@@ -327,7 +327,7 @@ function exporterTXT() {
   const blob = new Blob([texte], { type: "text/plain;charset=utf-8" });
   const lien = document.createElement("a");
   lien.href = URL.createObjectURL(blob);
-  lien.download = "resultats_smartcalc.txt";
+  lien.download = "resultats_SpendLee.txt";
   lien.click();
 }
 
