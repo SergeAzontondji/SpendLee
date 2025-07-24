@@ -372,4 +372,19 @@ window.addEventListener("DOMContentLoaded", () => {
   const themeSauvegarde = localStorage.getItem("theme") || "light";
   appliquerTheme(themeSauvegarde);
 });
+ 
 
+  const image = document.querySelector('.animated-forme');
+
+  function randomPosition() {
+    const maxWidth = window.innerWidth - 150;
+    const maxHeight = window.innerHeight - 150;
+    
+    const randomX = Math.floor(Math.random() * maxWidth);
+    const randomY = Math.floor(Math.random() * maxHeight);
+
+    image.style.left = `${randomX}px`;
+    image.style.top = `${randomY}px`;
+  }
+
+  setInterval(randomPosition, 20000);
