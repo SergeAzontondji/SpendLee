@@ -130,10 +130,10 @@
 .circle-highlight::after {
   content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 450%;
-  height: 450%;
+  left: 70%;
+  top: 120%;
+  width: 150%;
+  height: 150%;
   transform: translate(-50%, -50%) scale(0.8);
   background: url('/image/cercle.png') no-repeat center center;
   background-size: contain;
@@ -205,4 +205,29 @@ footer {
   width: 100%;
   padding: 10px 0;
   z-index: 999;
+}
+
+
+
+.animated-forme {
+  width: 100px; /* adapte à ton besoin */
+  animation: waveMove 5s ease-in-out infinite;
+  position: absolute;
+  width: 110px;
+  top: 50px;
+  left: 50px;
+  transition: top 20s ease, left 20s ease;
+  z-index: -1; /* 👈 très important pour être en arrière-plan */
+  pointer-events: none; /* pour éviter que ça bloque les clics */
+}
+
+
+
+@keyframes waveMove {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(1deg);
+  }
 }
